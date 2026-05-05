@@ -143,18 +143,69 @@ export const CARS = [
 ]
 
 export const PAINT_OPTIONS = [
+  // Whites & near-whites
+  { id: 'pure-white',         label: 'Pure White',              color: '#F4F4F0' },
+  { id: 'carrara-white',      label: 'Carrara White',           color: '#ECEAE5' },
+  { id: 'crystal-silver',     label: 'Crystal Silver',          color: '#D5D7D9' },
+  // Silvers & grays
+  { id: 'ice-grey',           label: 'Ice Grey Metallic',       color: '#C4C6C8' },
+  { id: 'rhodium-silver',     label: 'Rhodium Silver',          color: '#ABABAB' },
   { id: 'gt-silver',          label: 'GT Silver Metallic',      color: '#A3ACB3' },
-  { id: 'guards-red',         label: 'Guards Red',              color: '#FA2223' },
-  { id: 'miami-blue',         label: 'Miami Blue',              color: '#00B5C8' },
-  { id: 'racing-yellow',      label: 'Racing Yellow',           color: '#F8CD02' },
   { id: 'chalk',              label: 'Chalk',                   color: '#A5A4AC' },
-  { id: 'gentian-blue',       label: 'Gentian Blue Metallic',   color: '#09203F' },
-  { id: 'lava-orange',        label: 'Lava Orange',             color: '#FF2600' },
-  { id: 'python-green',       label: 'Python Green',            color: '#1FF497' },
-  { id: 'carmine-red',        label: 'Carmine Red',             color: '#9D0620' },
+  { id: 'agate-grey',         label: 'Agate Grey Metallic',     color: '#68686A' },
+  { id: 'quartzite-grey',     label: 'Quartzite Grey',          color: '#787A7C' },
+  { id: 'slate-grey',         label: 'Slate Grey Metallic',     color: '#4A4C50' },
+  { id: 'dark-grey',          label: 'Dark Grey',               color: '#363638' },
   { id: 'carbon-black',       label: 'Carbon Black Metallic',   color: '#1C2226' },
+  { id: 'jet-black',          label: 'Jet Black',               color: '#111416' },
+  // Greens
+  { id: 'mint-green',         label: 'Mint Green Metallic',     color: '#8CBDA0' },
+  { id: 'python-green',       label: 'Python Green',            color: '#1FF497' },
   { id: 'acid-green',         label: 'Acid Green',              color: '#CBE800' },
+  { id: 'malachite-green',    label: 'Malachite Green',         color: '#2A6E4E' },
+  { id: 'racing-green',       label: 'Racing Green',            color: '#1B3D2A' },
+  { id: 'brewster-green',     label: 'Brewster Green',          color: '#2D4A2A' },
   { id: 'aventurine-green',   label: 'Aventurine Green Metallic', color: '#605E51' },
+  { id: 'olive-green',        label: 'Olive Green Metallic',    color: '#6B7040' },
+  // Blues
+  { id: 'arctic-blue',        label: 'Arctic Blue',             color: '#9ABCD4' },
+  { id: 'miami-blue',         label: 'Miami Blue',              color: '#00B5C8' },
+  { id: 'steel-blue',         label: 'Steel Blue Metallic',     color: '#3A5A7A' },
+  { id: 'pure-blue',          label: 'Pure Blue',               color: '#1247A0' },
+  { id: 'cobalt-blue',        label: 'Cobalt Blue Metallic',    color: '#1A3A8B' },
+  { id: 'sapphire-blue',      label: 'Sapphire Blue Metallic',  color: '#141A3D' },
+  { id: 'gentian-blue',       label: 'Gentian Blue Metallic',   color: '#09203F' },
+  { id: 'night-blue',         label: 'Night Blue Metallic',     color: '#0A0F20' },
+  // Purples
+  { id: 'violet-blue',        label: 'Violet Blue Metallic',    color: '#3A208A' },
+  { id: 'amethyst',           label: 'Amethyst Metallic',       color: '#6A3080' },
+  // Reds & oranges
+  { id: 'signal-orange',      label: 'Signal Orange',           color: '#E85010' },
+  { id: 'lava-orange',        label: 'Lava Orange',             color: '#FF2600' },
+  { id: 'papaya',             label: 'Papaya Metallic',         color: '#D45410' },
+  { id: 'blood-orange',       label: 'Blood Orange',            color: '#C84410' },
+  { id: 'guards-red',         label: 'Guards Red',              color: '#FA2223' },
+  { id: 'carmine-red',        label: 'Carmine Red',             color: '#9D0620' },
+  { id: 'rubystone-red',      label: 'Rubystone Red',           color: '#8B1A2A' },
+  { id: 'amaranth-red',       label: 'Amaranth Red',            color: '#9B2040' },
+  { id: 'burgundy',           label: 'Burgundy Red',            color: '#4A0E14' },
+  // Yellows & golds
+  { id: 'speed-yellow',       label: 'Speed Yellow',            color: '#EFDE23' },
+  { id: 'racing-yellow',      label: 'Racing Yellow',           color: '#F8CD02' },
+  { id: 'signal-yellow',      label: 'Signal Yellow',           color: '#EDD53A' },
+  { id: 'saffron-yellow',     label: 'Saffron Yellow',          color: '#C89B2A' },
+  // Warm browns
+  { id: 'cognac',             label: 'Cognac Metallic',         color: '#7A4020' },
+  { id: 'copper',             label: 'Copper Metallic',         color: '#A05A30' },
+]
+
+export const FINISH_OPTIONS = [
+  { id: 'gloss',          label: 'Gloss',          roughness: 0.05, metalness: 0.0  },
+  { id: 'semi-gloss',     label: 'Semi-Gloss',     roughness: 0.2,  metalness: 0.05 },
+  { id: 'metallic',       label: 'Metallic',       roughness: 0.15, metalness: 0.75 },
+  { id: 'satin',          label: 'Satin',          roughness: 0.5,  metalness: 0.05 },
+  { id: 'satin-metallic', label: 'Satin Metallic', roughness: 0.4,  metalness: 0.5  },
+  { id: 'matte',          label: 'Matte',          roughness: 0.95, metalness: 0.0  },
 ]
 
 export const RIM_OPTIONS = [
@@ -164,6 +215,21 @@ export const RIM_OPTIONS = [
   { id: 'carrera',       label: 'Carrera Classic' },
   { id: 'matte-black',   label: 'Matte Black Sport' },
   { id: 'chrome',        label: 'Chrome Sport' },
+]
+
+export const RIM_COLOR_OPTIONS = [
+  { id: 'silver',     label: 'Silver',       color: '#C8C8C8' },
+  { id: 'gunmetal',   label: 'Gunmetal',     color: '#3D3D3F' },
+  { id: 'gloss-black',label: 'Gloss Black',  color: '#111214' },
+  { id: 'carbon',     label: 'Carbon',       color: '#1A1A1C' },
+  { id: 'gold',       label: 'Gold',         color: '#C9A93C' },
+  { id: 'bronze',     label: 'Bronze',       color: '#8B5E3C' },
+  { id: 'rose-gold',  label: 'Rose Gold',    color: '#B76E79' },
+  { id: 'platinum',   label: 'Platinum',     color: '#E0E0DE' },
+  { id: 'titanium',   label: 'Titanium',     color: '#878681' },
+  { id: 'candy-red',  label: 'Candy Red',    color: '#C01020' },
+  { id: 'cobalt',     label: 'Cobalt Blue',  color: '#1A3A8B' },
+  { id: 'white',      label: 'White',        color: '#E8E8E6' },
 ]
 
 export const BODY_KIT_OPTIONS = [
@@ -208,7 +274,9 @@ export const CAMERA_OPTIONS = [
 
 export const ALL_CATEGORIES = [
   { key: 'paint',       label: 'PAINT',       options: PAINT_OPTIONS },
+  { key: 'finish',      label: 'FINISH',      options: FINISH_OPTIONS },
   { key: 'rims',        label: 'RIMS',        options: RIM_OPTIONS },
+  { key: 'rimColor',    label: 'RIM COLOR',   options: RIM_COLOR_OPTIONS },
   { key: 'bodyKit',     label: 'BODY KIT',    options: BODY_KIT_OPTIONS },
   { key: 'decals',      label: 'DECALS',      options: DECAL_OPTIONS },
   { key: 'environment', label: 'ENVIRONMENT', options: ENVIRONMENT_OPTIONS },
