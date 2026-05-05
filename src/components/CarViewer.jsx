@@ -4,6 +4,15 @@ import { useGLTF, OrbitControls, Environment, useProgress, Html } from '@react-t
 import { useCarStore } from '../state/useCarStore'
 import { PAINT_OPTIONS, ENVIRONMENT_OPTIONS } from '../config/carOptions'
 
+const RIM_MATERIALS = {
+  0: { metalness: 0.6, roughness: 0.3 },   // Stock GT2 RS
+  1: { metalness: 0.8, roughness: 0.1 },   // Cup 2 Spoke (polished)
+  2: { metalness: 0.7, roughness: 0.2 },   // Turbo Twist
+  3: { metalness: 0.4, roughness: 0.5 },   // Carrera Classic
+  4: { metalness: 0.3, roughness: 0.8 },   // Matte Black Sport
+  5: { metalness: 1.0, roughness: 0.05 },  // Chrome Sport
+}
+
 function LoadingBar() {
   const { progress } = useProgress()
   return (
@@ -24,13 +33,29 @@ function ScreenshotCapture({ onRendererReady }) {
   return null
 }
 
-function CarModel({ paintColor }) {
+// No separate aero/body kit meshes exist in the GLB — body kit visibility toggling is skipped.
+// The GLB has no nodes/materials matching splitter, spoiler, wing, skirt, diffuser, bumper, lip, or aero.
+
+function CarModel({ paintColor, rimIndex, bodyKitIndex }) {
   const { scene } = useGLTF('/models/gt2rs.glb')
+  const rimProps = RIM_MATERIALS[rimIndex] ?? RIM_MATERIALS[0]
 
   scene.traverse((child) => {
-    if (child.isMesh && child.material?.name?.toLowerCase().includes('paint')) {
+    if (!child.isMesh) return
+
+    const matName = child.material?.name?.toLowerCase() ?? ''
+
+    // Apply paint color to paint materials
+    if (matName.includes('paint')) {
       child.material = child.material.clone()
       child.material.color.set(paintColor)
+    }
+
+    // Apply rim metalness/roughness to rim materials (Rims.FL, Rims.FL.001, etc.)
+    if (matName.startsWith('rims.')) {
+      child.material = child.material.clone()
+      child.material.metalness = rimProps.metalness
+      child.material.roughness = rimProps.roughness
     }
   })
 
@@ -38,7 +63,7 @@ function CarModel({ paintColor }) {
 }
 
 export default function CarViewer({ onRendererReady }) {
-  const { paint, environment } = useCarStore()
+  const { paint, rims, bodyKit, environment } = useCarStore()
   const paintColor = PAINT_OPTIONS[paint.index].color
   const envOption = ENVIRONMENT_OPTIONS[environment.index]
 
@@ -54,7 +79,7 @@ export default function CarViewer({ onRendererReady }) {
       {envOption.preset && <Environment preset={envOption.preset} />}
 
       <Suspense fallback={<LoadingBar />}>
-        <CarModel paintColor={paintColor} />
+        <CarModel paintColor={paintColor} rimIndex={rims.index} bodyKitIndex={bodyKit.index} />
       </Suspense>
 
       <OrbitControls
