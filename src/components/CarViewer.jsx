@@ -3,7 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, useProgress, Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { useCarStore } from '../state/useCarStore'
-import { CARS, PAINT_OPTIONS, ENVIRONMENT_OPTIONS, WEATHER_OPTIONS, CAMERA_OPTIONS } from '../config/carOptions'
+import { CARS, PAINT_OPTIONS, FINISH_OPTIONS, ENVIRONMENT_OPTIONS, WEATHER_OPTIONS, CAMERA_OPTIONS, RIM_COLOR_OPTIONS } from '../config/carOptions'
 
 const RIM_MATERIALS = {
   0: { metalness: 0.6, roughness: 0.3 },   // Stock GT2 RS
@@ -79,7 +79,7 @@ function ScreenshotCapture({ onRendererReady }) {
 // Target longest horizontal dimension in world units — calibrated to match GT2RS at scale=1 (19.78 units)
 const AUTO_FIT_SIZE = 20
 
-function CarModel({ carConfig, paintColor, rimIndex }) {
+function CarModel({ carConfig, paintColor, finishOpt, rimIndex, rimColor }) {
   const { scene } = useGLTF(carConfig.file)
   const rimProps = RIM_MATERIALS[rimIndex] ?? RIM_MATERIALS[0]
   const paintSet = new Set(carConfig.paintMaterials)
@@ -100,9 +100,12 @@ function CarModel({ carConfig, paintColor, rimIndex }) {
     if (paintSet.has(matName)) {
       child.material = child.material.clone()
       child.material.color.set(paintColor)
+      child.material.roughness = finishOpt.roughness
+      child.material.metalness = finishOpt.metalness
     }
     if (rimSet.size > 0 && rimSet.has(matName)) {
       child.material = child.material.clone()
+      child.material.color.set(rimColor)
       child.material.metalness = rimProps.metalness
       child.material.roughness = rimProps.roughness
     }
@@ -112,11 +115,13 @@ function CarModel({ carConfig, paintColor, rimIndex }) {
 }
 
 export default function CarViewer({ onRendererReady }) {
-  const { car, paint, rims, environment, weather, camera: cameraState } = useCarStore()
+  const { car, paint, finish, rims, rimColor: rimColorState, environment, weather, camera: cameraState } = useCarStore()
   const carConfig  = CARS[car.index]
   const paintColor = PAINT_OPTIONS[paint.index].color
-  const envOption = ENVIRONMENT_OPTIONS[environment.index]
-  const weatherId = WEATHER_OPTIONS[weather.index].id
+  const finishOpt  = FINISH_OPTIONS[finish.index]
+  const rimColorVal = RIM_COLOR_OPTIONS[rimColorState.index].color
+  const envOption  = ENVIRONMENT_OPTIONS[environment.index]
+  const weatherId  = WEATHER_OPTIONS[weather.index].id
   const orbitRef = useRef()
 
   return (
@@ -135,7 +140,9 @@ export default function CarViewer({ onRendererReady }) {
           key={carConfig.id}
           carConfig={carConfig}
           paintColor={paintColor}
+          finishOpt={finishOpt}
           rimIndex={rims.index}
+          rimColor={rimColorVal}
         />
       </Suspense>
 
