@@ -76,8 +76,8 @@ function ScreenshotCapture({ onRendererReady }) {
   return null
 }
 
-// Target longest horizontal dimension in world units — matches GT2RS at scale=1
-const AUTO_FIT_SIZE = 5
+// Target longest horizontal dimension in world units — calibrated to match GT2RS at scale=1 (19.78 units)
+const AUTO_FIT_SIZE = 20
 
 function CarModel({ carConfig, paintColor, rimIndex }) {
   const { scene } = useGLTF(carConfig.file)
