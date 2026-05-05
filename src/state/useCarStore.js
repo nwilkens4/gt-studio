@@ -3,7 +3,9 @@ import { create } from 'zustand'
 const INITIAL_STATE = {
   car:         { index: 0 },
   paint:       { index: 0 },
+  finish:      { index: 0 },
   rims:        { index: 0 },
+  rimColor:    { index: 0 },
   bodyKit:     { index: 0 },
   decals:      { index: 0 },
   environment: { index: 0 },
