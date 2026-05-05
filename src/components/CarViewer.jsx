@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef, useMemo } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, useProgress, Html } from '@react-three/drei'
 import * as THREE from 'three'
@@ -76,21 +76,31 @@ function ScreenshotCapture({ onRendererReady }) {
   return null
 }
 
+// Target longest horizontal dimension in world units — matches GT2RS at scale=1
+const AUTO_FIT_SIZE = 5
+
 function CarModel({ carConfig, paintColor, rimIndex }) {
   const { scene } = useGLTF(carConfig.file)
   const rimProps = RIM_MATERIALS[rimIndex] ?? RIM_MATERIALS[0]
   const paintSet = new Set(carConfig.paintMaterials)
   const rimSet   = new Set(carConfig.rimMaterials)
 
+  const [finalScale, finalPosition] = useMemo(() => {
+    if (carConfig.scale != null) return [carConfig.scale, carConfig.position]
+    const box    = new THREE.Box3().setFromObject(scene)
+    const size   = box.getSize(new THREE.Vector3())
+    const center = box.getCenter(new THREE.Vector3())
+    const s      = AUTO_FIT_SIZE / (Math.max(size.x, size.z) || 1)
+    return [s, [0, 0.5 - center.y * s, 0]]
+  }, [scene, carConfig.id])
+
   scene.traverse((child) => {
     if (!child.isMesh) return
     const matName = child.material?.name ?? ''
-
     if (paintSet.has(matName)) {
       child.material = child.material.clone()
       child.material.color.set(paintColor)
     }
-
     if (rimSet.size > 0 && rimSet.has(matName)) {
       child.material = child.material.clone()
       child.material.metalness = rimProps.metalness
@@ -98,13 +108,7 @@ function CarModel({ carConfig, paintColor, rimIndex }) {
     }
   })
 
-  return (
-    <primitive
-      object={scene}
-      scale={carConfig.scale}
-      position={carConfig.position}
-    />
-  )
+  return <primitive object={scene} scale={finalScale} position={finalPosition} />
 }
 
 export default function CarViewer({ onRendererReady }) {
