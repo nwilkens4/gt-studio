@@ -1,9 +1,9 @@
 import { Suspense, useEffect, useRef } from 'react'
-import { Canvas, useThree, useFrame } from '@react-three/fiber'
+import { Canvas, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, useProgress, Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { useCarStore } from '../state/useCarStore'
-import { PAINT_OPTIONS, ENVIRONMENT_OPTIONS, WEATHER_OPTIONS, CAMERA_OPTIONS } from '../config/carOptions'
+import { CARS, PAINT_OPTIONS, ENVIRONMENT_OPTIONS, WEATHER_OPTIONS, CAMERA_OPTIONS } from '../config/carOptions'
 
 const RIM_MATERIALS = {
   0: { metalness: 0.6, roughness: 0.3 },   // Stock GT2 RS
@@ -22,26 +22,36 @@ const WEATHER_LIGHTING = {
   sunset:   { ambientIntensity: 0.5, dirIntensity: 1.2, dirColor: '#ff6633', fog: false },
 }
 
-function SceneLighting({ weatherId }) {
+function SceneLighting({ weatherId, hasEnv }) {
   const w = WEATHER_LIGHTING[weatherId] || WEATHER_LIGHTING.clear
   return (
     <>
-      <ambientLight intensity={w.ambientIntensity} />
-      <directionalLight position={[5, 5, 5]} intensity={w.dirIntensity} color={w.dirColor} />
+      {hasEnv ? (
+        // HDRI environment handles IBL — just a subtle fill to soften pitch-black shadows
+        <ambientLight intensity={0.08} />
+      ) : (
+        // No HDRI — full manual 3-point lighting rig
+        <>
+          <ambientLight intensity={w.ambientIntensity} />
+          <directionalLight position={[5, 8, 5]} intensity={w.dirIntensity} color={w.dirColor} />
+          <directionalLight position={[-4, 3, -4]} intensity={w.dirIntensity * 0.35} color={w.dirColor} />
+        </>
+      )}
       {w.fog && <fog attach="fog" args={['#334455', 10, 30]} />}
     </>
   )
 }
 
-function CameraRig({ cameraIndex }) {
+function CameraRig({ cameraIndex, orbitRef }) {
   const { camera } = useThree()
-  const target = CAMERA_OPTIONS[cameraIndex]
-  const targetPos = new THREE.Vector3(...target.position)
 
-  useFrame(() => {
-    camera.position.lerp(targetPos, 0.05)
-    camera.lookAt(...target.target)
-  })
+  useEffect(() => {
+    if (!orbitRef.current) return
+    const target = CAMERA_OPTIONS[cameraIndex]
+    camera.position.set(...target.position)
+    orbitRef.current.target.set(...target.target)
+    orbitRef.current.update()
+  }, [cameraIndex])
 
   return null
 }
@@ -66,62 +76,73 @@ function ScreenshotCapture({ onRendererReady }) {
   return null
 }
 
-// No separate aero/body kit meshes exist in the GLB — body kit visibility toggling is skipped.
-// The GLB has no nodes/materials matching splitter, spoiler, wing, skirt, diffuser, bumper, lip, or aero.
-
-function CarModel({ paintColor, rimIndex, bodyKitIndex }) {
-  const { scene } = useGLTF('/models/gt2rs.glb')
+function CarModel({ carConfig, paintColor, rimIndex }) {
+  const { scene } = useGLTF(carConfig.file)
   const rimProps = RIM_MATERIALS[rimIndex] ?? RIM_MATERIALS[0]
+  const paintSet = new Set(carConfig.paintMaterials)
+  const rimSet   = new Set(carConfig.rimMaterials)
 
   scene.traverse((child) => {
     if (!child.isMesh) return
+    const matName = child.material?.name ?? ''
 
-    const matName = child.material?.name?.toLowerCase() ?? ''
-
-    // Apply paint color to paint materials
-    if (matName.includes('paint')) {
+    if (paintSet.has(matName)) {
       child.material = child.material.clone()
       child.material.color.set(paintColor)
     }
 
-    // Apply rim metalness/roughness to rim materials (Rims.FL, Rims.FL.001, etc.)
-    if (matName.startsWith('rims.')) {
+    if (rimSet.size > 0 && rimSet.has(matName)) {
       child.material = child.material.clone()
       child.material.metalness = rimProps.metalness
       child.material.roughness = rimProps.roughness
     }
   })
 
-  return <primitive object={scene} scale={1} position={[0, -0.5, 0]} />
+  return (
+    <primitive
+      object={scene}
+      scale={carConfig.scale}
+      position={carConfig.position}
+    />
+  )
 }
 
 export default function CarViewer({ onRendererReady }) {
-  const { paint, rims, bodyKit, environment, weather, camera: cameraState } = useCarStore()
+  const { car, paint, rims, environment, weather, camera: cameraState } = useCarStore()
+  const carConfig  = CARS[car.index]
   const paintColor = PAINT_OPTIONS[paint.index].color
   const envOption = ENVIRONMENT_OPTIONS[environment.index]
   const weatherId = WEATHER_OPTIONS[weather.index].id
+  const orbitRef = useRef()
 
   return (
     <Canvas
       frameloop="demand"
-      camera={{ position: [3, 1.2, 3], fov: 45 }}
+      camera={{ position: [12, 5, 12], fov: 45 }}
+      gl={{ toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.85 }}
       style={{ background: '#000000' }}
     >
-      <SceneLighting weatherId={weatherId} />
+      <SceneLighting weatherId={weatherId} hasEnv={!!envOption.preset} />
 
       {envOption.preset && <Environment preset={envOption.preset} />}
 
       <Suspense fallback={<LoadingBar />}>
-        <CarModel paintColor={paintColor} rimIndex={rims.index} bodyKitIndex={bodyKit.index} />
+        <CarModel
+          key={carConfig.id}
+          carConfig={carConfig}
+          paintColor={paintColor}
+          rimIndex={rims.index}
+        />
       </Suspense>
 
-      <CameraRig cameraIndex={cameraState.index} />
+      <CameraRig cameraIndex={cameraState.index} orbitRef={orbitRef} />
 
       <OrbitControls
+        ref={orbitRef}
         key={cameraState.index}
         enablePan={false}
         minDistance={2}
-        maxDistance={8}
+        maxDistance={20}
         autoRotate
         autoRotateSpeed={0.5}
       />
