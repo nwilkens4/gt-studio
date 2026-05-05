@@ -78,4 +78,17 @@ describe('searchTracks', () => {
     const results = await searchTracks('token', 'query')
     expect(results[0].albumArt).toBe('')
   })
+
+  it('returns empty string for artist when artists array is empty', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        tracks: {
+          items: [{ ...MOCK_TRACK, artists: [] }],
+        },
+      }),
+    })
+    const results = await searchTracks('token', 'query')
+    expect(results[0].artist).toBe('')
+  })
 })
