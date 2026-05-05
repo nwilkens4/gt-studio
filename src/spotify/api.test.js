@@ -65,4 +65,17 @@ describe('searchTracks', () => {
     const results = await searchTracks('token', 'query')
     expect(results[0].albumArt).toBe('http://only.jpg')
   })
+
+  it('returns empty string for albumArt when no images', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        tracks: {
+          items: [{ ...MOCK_TRACK, album: { images: [] } }],
+        },
+      }),
+    })
+    const results = await searchTracks('token', 'query')
+    expect(results[0].albumArt).toBe('')
+  })
 })
