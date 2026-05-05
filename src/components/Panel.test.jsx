@@ -8,16 +8,23 @@ describe('Panel', () => {
     expect(screen.getByText('Content')).toBeInTheDocument()
   })
 
-  it('hides children when collapsed', () => {
+  it('still renders children in DOM when collapsed (hidden via width)', () => {
     render(<Panel><div>Content</div></Panel>)
     fireEvent.click(screen.getByLabelText('Collapse panel'))
-    expect(screen.queryByText('Content')).not.toBeInTheDocument()
+    // Children stay in DOM, panel collapses via width transition
+    expect(screen.getByText('Content')).toBeInTheDocument()
   })
 
-  it('shows children again when re-expanded', () => {
+  it('toggle button changes label when collapsed', () => {
+    render(<Panel><div>Content</div></Panel>)
+    fireEvent.click(screen.getByLabelText('Collapse panel'))
+    expect(screen.getByLabelText('Expand panel')).toBeInTheDocument()
+  })
+
+  it('toggle button label returns to Collapse when re-expanded', () => {
     render(<Panel><div>Content</div></Panel>)
     fireEvent.click(screen.getByLabelText('Collapse panel'))
     fireEvent.click(screen.getByLabelText('Expand panel'))
-    expect(screen.getByText('Content')).toBeInTheDocument()
+    expect(screen.getByLabelText('Collapse panel')).toBeInTheDocument()
   })
 })

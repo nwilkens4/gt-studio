@@ -24,11 +24,14 @@ export default function Panel({ children }) {
         }
       </button>
 
-      {open && (
+      <div
+        className="h-full overflow-hidden transition-all duration-300 ease-in-out"
+        style={{ width: open ? '320px' : '0px' }}
+      >
         <div className="w-80 h-full overflow-y-auto flex flex-col gap-3 p-4">
           {children}
         </div>
-      )}
+      </div>
     </div>
   )
 }
