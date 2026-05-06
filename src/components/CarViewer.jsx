@@ -85,33 +85,41 @@ function CarModel({ carConfig, paintColor, finishOpt, rimIndex, rimColor }) {
   const paintSet = new Set(carConfig.paintMaterials)
   const rimSet   = new Set(carConfig.rimMaterials)
 
+  // Clone the cached scene so we never mutate the shared GLTF cache.
+  // Without this, every render writes back to the cached scene object,
+  // corrupting it for future visits and causing a blank canvas after cycling.
+  const clonedScene = useMemo(() => scene.clone(true), [scene])
+
   const [finalScale, finalPosition] = useMemo(() => {
     if (carConfig.scale != null) return [carConfig.scale, carConfig.position]
-    const box    = new THREE.Box3().setFromObject(scene)
+    const box    = new THREE.Box3().setFromObject(clonedScene)
     const size   = box.getSize(new THREE.Vector3())
     const center = box.getCenter(new THREE.Vector3())
     const s      = AUTO_FIT_SIZE / (Math.max(size.x, size.z) || 1)
     return [s, [0, 0.5 - center.y * s, 0]]
-  }, [scene, carConfig.id])
+  }, [clonedScene, carConfig.id])
 
-  scene.traverse((child) => {
-    if (!child.isMesh) return
-    const matName = child.material?.name ?? ''
-    if (paintSet.has(matName)) {
-      child.material = child.material.clone()
-      child.material.color.set(paintColor)
-      child.material.roughness = finishOpt.roughness
-      child.material.metalness = finishOpt.metalness
-    }
-    if (rimSet.size > 0 && rimSet.has(matName)) {
-      child.material = child.material.clone()
-      child.material.color.set(rimColor)
-      child.material.metalness = rimProps.metalness
-      child.material.roughness = rimProps.roughness
-    }
-  })
+  useEffect(() => {
+    const rimPropsLocal = RIM_MATERIALS[rimIndex] ?? RIM_MATERIALS[0]
+    clonedScene.traverse((child) => {
+      if (!child.isMesh) return
+      const matName = child.material?.name ?? ''
+      if (paintSet.has(matName)) {
+        child.material = child.material.clone()
+        child.material.color.set(paintColor)
+        child.material.roughness = finishOpt.roughness
+        child.material.metalness = finishOpt.metalness
+      }
+      if (rimSet.size > 0 && rimSet.has(matName)) {
+        child.material = child.material.clone()
+        child.material.color.set(rimColor)
+        child.material.metalness = rimPropsLocal.metalness
+        child.material.roughness = rimPropsLocal.roughness
+      }
+    })
+  }, [clonedScene, paintColor, finishOpt, rimIndex, rimColor])
 
-  return <primitive object={scene} scale={finalScale} position={finalPosition} />
+  return <primitive object={clonedScene} scale={finalScale} position={finalPosition} />
 }
 
 export default function CarViewer({ onRendererReady }) {
