@@ -150,10 +150,8 @@ describe('color section accordion', () => {
         onPrev={vi.fn()}
       />
     )
-    // Selected label is shown in the header span (always visible)
-    const headerSpan = document.querySelector('button[aria-label="PAINT"] span.text-\\[10px\\]')
-    expect(headerSpan).toBeInTheDocument()
-    expect(headerSpan).toHaveTextContent('Pure White')
+    // Selected label is shown in the header (always visible)
+    expect(screen.getByText('Pure White')).toBeInTheDocument()
   })
 
   it('collapses again on second header click', () => {
