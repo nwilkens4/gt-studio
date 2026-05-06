@@ -28,10 +28,12 @@ describe('Panel', () => {
     expect(screen.getByLabelText('Collapse panel')).toBeInTheDocument()
   })
 
-  it('shows Collapse panel aria-label when expanded', () => {
+  it('toggle button is focusable and has correct role', () => {
     render(<Panel><div>Content</div></Panel>)
     const btn = screen.getByLabelText('Collapse panel')
-    expect(btn).toBeInTheDocument()
+    expect(btn.tagName).toBe('BUTTON')
+    btn.focus()
+    expect(document.activeElement).toBe(btn)
   })
 
   it('re-expands when toggle is clicked twice', () => {
