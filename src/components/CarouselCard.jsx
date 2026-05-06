@@ -56,7 +56,6 @@ export default function CarouselCard({ label, options, currentIndex, onSelect, o
               />
             ))}
           </div>
-          <p className="text-[12px] text-zinc-300 font-medium">{selected.label}</p>
         </div>
       </div>
     )
