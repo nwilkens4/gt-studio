@@ -5,7 +5,7 @@ export default function CarouselCard({ label, options, currentIndex, onSelect, o
 
   if (hasColors) {
     return (
-      <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="px-5 pt-5 pb-4">
         <p className="text-[9px] tracking-[0.22em] uppercase font-medium text-zinc-500 mb-3">{label}</p>
         <div className="grid grid-cols-6 gap-[9px] mb-3">
           {options.map((opt, i) => (
@@ -30,7 +30,7 @@ export default function CarouselCard({ label, options, currentIndex, onSelect, o
   }
 
   return (
-    <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+    <div className="px-5 py-4">
       <p className="text-[9px] tracking-[0.22em] uppercase font-medium text-zinc-500 mb-2">{label}</p>
       <div className="flex items-center gap-1">
         <button
