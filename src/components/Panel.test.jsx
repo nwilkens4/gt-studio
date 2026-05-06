@@ -28,7 +28,7 @@ describe('Panel', () => {
     expect(screen.getByLabelText('Collapse panel')).toBeInTheDocument()
   })
 
-  it('shows ChevronRight icon when expanded', () => {
+  it('shows Collapse panel aria-label when expanded', () => {
     render(<Panel><div>Content</div></Panel>)
     const btn = screen.getByLabelText('Collapse panel')
     expect(btn).toBeInTheDocument()
