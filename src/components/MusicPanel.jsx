@@ -70,10 +70,6 @@ export default function MusicPanel() {
     return () => clearTimeout(debounceRef.current)
   }, [])
 
-  useEffect(() => {
-    if (currentTrack) setResults([])
-  }, [currentTrack])
-
   const handleConnect = async () => {
     const url = await buildAuthUrl(CLIENT_ID, REDIRECT_URI)
     window.location.href = url
@@ -130,7 +126,7 @@ export default function MusicPanel() {
             style={{ border: '1px solid rgba(255,255,255,0.08)' }}
           />
 
-          {results.length > 0 && !currentTrack && (
+          {results.length > 0 && (
             <div className="flex flex-col gap-1">
               {results.map((track) => (
                 <button
