@@ -44,7 +44,11 @@ export default function MusicPanel() {
           storeTokens(data.access_token, data.refresh_token, data.expires_in)
           setToken(data.access_token, data.refresh_token)
         })
-        .catch(console.error)
+        .catch((err) => {
+          console.error(err)
+          clearStoredTokens()
+          disconnect()
+        })
       return
     }
 
@@ -61,6 +65,14 @@ export default function MusicPanel() {
         .catch(() => { clearStoredTokens(); disconnect() })
     }
   }, [])
+
+  useEffect(() => {
+    return () => clearTimeout(debounceRef.current)
+  }, [])
+
+  useEffect(() => {
+    if (currentTrack) setResults([])
+  }, [currentTrack])
 
   const handleConnect = async () => {
     const url = await buildAuthUrl(CLIENT_ID, REDIRECT_URI)
@@ -79,6 +91,7 @@ export default function MusicPanel() {
     clearTimeout(debounceRef.current)
     if (!q.trim()) { setResults([]); return }
     debounceRef.current = setTimeout(async () => {
+      if (!token) return
       try {
         const tracks = await searchTracks(token, q)
         setResults(tracks)
@@ -149,6 +162,7 @@ export default function MusicPanel() {
                 </div>
                 <button
                   onClick={togglePlay}
+                  aria-label={isPlaying ? 'Pause' : 'Play'}
                   className="w-7 h-7 flex-shrink-0 flex items-center justify-center text-zinc-400 hover:text-zinc-100 transition-colors cursor-pointer rounded-full hover:bg-white/10"
                 >
                   {isPlaying ? (
