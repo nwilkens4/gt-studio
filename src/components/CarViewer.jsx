@@ -6,12 +6,12 @@ import { useCarStore } from '../state/useCarStore'
 import { CARS, PAINT_OPTIONS, FINISH_OPTIONS, ENVIRONMENT_OPTIONS, WEATHER_OPTIONS, CAMERA_OPTIONS, RIM_COLOR_OPTIONS } from '../config/carOptions'
 
 const RIM_MATERIALS = {
-  0: { metalness: 0.6, roughness: 0.3 },   // Stock GT2 RS
-  1: { metalness: 0.8, roughness: 0.1 },   // Cup 2 Spoke (polished)
-  2: { metalness: 0.7, roughness: 0.2 },   // Turbo Twist
-  3: { metalness: 0.4, roughness: 0.5 },   // Carrera Classic
-  4: { metalness: 0.3, roughness: 0.8 },   // Matte Black Sport
-  5: { metalness: 1.0, roughness: 0.05 },  // Chrome Sport
+  0: { metalness: 0.6, roughness: 0.3 },   // Standard
+  1: { metalness: 0.8, roughness: 0.1 },   // Polished
+  2: { metalness: 0.7, roughness: 0.2 },   // Brushed
+  3: { metalness: 0.4, roughness: 0.5 },   // Satin
+  4: { metalness: 0.3, roughness: 0.8 },   // Matte
+  5: { metalness: 1.0, roughness: 0.05 },  // Chrome
 }
 
 const WEATHER_LIGHTING = {
