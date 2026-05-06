@@ -36,12 +36,12 @@ describe('Panel', () => {
     expect(document.activeElement).toBe(btn)
   })
 
-  it('re-expands when toggle is clicked twice', () => {
+  it('content area has 0px width when collapsed', () => {
     render(<Panel><div>Content</div></Panel>)
-    const collapseBtn = screen.getByLabelText('Collapse panel')
-    fireEvent.click(collapseBtn)
-    const expandBtn = screen.getByLabelText('Expand panel')
-    fireEvent.click(expandBtn)
-    expect(screen.getByLabelText('Collapse panel')).toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText('Collapse panel'))
+    // The sliding content wrapper (second child of the flex container) gets width:0px
+    // Panel structure: flex div > [toggle button, content div]
+    const contentWrapper = document.querySelector('[style*="width: 0px"]')
+    expect(contentWrapper).toBeInTheDocument()
   })
 })
