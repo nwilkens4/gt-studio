@@ -209,12 +209,12 @@ export const FINISH_OPTIONS = [
 ]
 
 export const RIM_OPTIONS = [
-  { id: 'stock',         label: 'Stock GT2 RS' },
-  { id: 'cup2',          label: 'Cup 2 Spoke' },
-  { id: 'turbo-twist',   label: 'Turbo Twist' },
-  { id: 'carrera',       label: 'Carrera Classic' },
-  { id: 'matte-black',   label: 'Matte Black Sport' },
-  { id: 'chrome',        label: 'Chrome Sport' },
+  { id: 'stock',         label: 'Standard' },
+  { id: 'cup2',          label: 'Polished' },
+  { id: 'turbo-twist',   label: 'Brushed' },
+  { id: 'carrera',       label: 'Satin' },
+  { id: 'matte-black',   label: 'Matte' },
+  { id: 'chrome',        label: 'Chrome' },
 ]
 
 export const RIM_COLOR_OPTIONS = [
@@ -275,10 +275,9 @@ export const CAMERA_OPTIONS = [
 export const ALL_CATEGORIES = [
   { key: 'paint',       label: 'PAINT',       options: PAINT_OPTIONS },
   { key: 'finish',      label: 'FINISH',      options: FINISH_OPTIONS },
-  { key: 'rims',        label: 'RIMS',        options: RIM_OPTIONS },
+  { key: 'rims',        label: 'RIM FINISH',  options: RIM_OPTIONS },
   { key: 'rimColor',    label: 'RIM COLOR',   options: RIM_COLOR_OPTIONS },
   { key: 'bodyKit',     label: 'BODY KIT',    options: BODY_KIT_OPTIONS },
-  { key: 'decals',      label: 'DECALS',      options: DECAL_OPTIONS },
   { key: 'environment', label: 'ENVIRONMENT', options: ENVIRONMENT_OPTIONS },
   { key: 'weather',     label: 'WEATHER',     options: WEATHER_OPTIONS },
   { key: 'camera',      label: 'CAMERA',      options: CAMERA_OPTIONS },
