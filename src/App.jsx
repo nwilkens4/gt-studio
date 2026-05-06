@@ -20,7 +20,7 @@ export default function App() {
 
   return (
     <div className="w-full h-full flex">
-      <div className="flex-1">
+      <div className="flex-1 min-w-0">
         <CarViewer onRendererReady={(gl) => { rendererRef.current = gl }} />
       </div>
 
