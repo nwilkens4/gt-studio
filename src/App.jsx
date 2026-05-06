@@ -2,6 +2,7 @@ import { useRef, useCallback } from 'react'
 import Panel from './components/Panel'
 import CarouselCard from './components/CarouselCard'
 import CarViewer from './components/CarViewer'
+import MusicPanel from './components/MusicPanel'
 import { useCarStore } from './state/useCarStore'
 import { CARS, ALL_CATEGORIES } from './config/carOptions'
 
@@ -44,6 +45,8 @@ export default function App() {
             onPrev={() => store.prev(key, options.length)}
           />
         ))}
+
+        <MusicPanel />
 
         <div className="px-5 py-5 flex gap-3 mt-auto">
           <button
