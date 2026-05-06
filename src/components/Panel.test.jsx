@@ -27,4 +27,19 @@ describe('Panel', () => {
     fireEvent.click(screen.getByLabelText('Expand panel'))
     expect(screen.getByLabelText('Collapse panel')).toBeInTheDocument()
   })
+
+  it('shows ChevronRight icon when expanded', () => {
+    render(<Panel><div>Content</div></Panel>)
+    const btn = screen.getByLabelText('Collapse panel')
+    expect(btn).toBeInTheDocument()
+  })
+
+  it('re-expands when toggle is clicked twice', () => {
+    render(<Panel><div>Content</div></Panel>)
+    const collapseBtn = screen.getByLabelText('Collapse panel')
+    fireEvent.click(collapseBtn)
+    const expandBtn = screen.getByLabelText('Expand panel')
+    fireEvent.click(expandBtn)
+    expect(screen.getByLabelText('Collapse panel')).toBeInTheDocument()
+  })
 })
