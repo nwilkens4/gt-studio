@@ -8,7 +8,7 @@ export default function CarouselCard({ label, options, currentIndex, onSelect, o
   if (hasColors) {
     const selected = options[currentIndex]
     return (
-      <div className="px-5 pt-5 pb-4">
+      <div style={{ paddingLeft: '24px', paddingRight: '24px', paddingTop: '24px', paddingBottom: '20px' }}>
         {/* Accordion header */}
         <button
           onClick={() => setOpen((v) => !v)}
@@ -39,7 +39,7 @@ export default function CarouselCard({ label, options, currentIndex, onSelect, o
           className="overflow-hidden transition-all duration-300 ease-in-out"
           style={{ maxHeight: open ? '320px' : '0px' }}
         >
-          <div className="grid grid-cols-6 gap-[9px] mt-3 mb-3 px-1">
+          <div className="grid grid-cols-6 gap-[6px] mt-3 mb-3">
             {options.map((opt, i) => (
               <button
                 key={opt.id}
@@ -62,7 +62,7 @@ export default function CarouselCard({ label, options, currentIndex, onSelect, o
   }
 
   return (
-    <div className="px-5 py-5">
+    <div style={{ paddingLeft: '20px', paddingRight: '20px', paddingTop: '28px', paddingBottom: '28px' }}>
       <p className="text-[9px] tracking-[0.22em] uppercase font-medium text-zinc-500 mb-2">{label}</p>
       <div className="flex items-center gap-1">
         <button
