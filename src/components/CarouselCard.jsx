@@ -39,7 +39,7 @@ export default function CarouselCard({ label, options, currentIndex, onSelect, o
           className="overflow-hidden transition-all duration-300 ease-in-out"
           style={{ maxHeight: open ? '320px' : '0px' }}
         >
-          <div className="flex flex-wrap justify-center gap-[8px] mt-3 mb-3">
+          <div className="flex flex-wrap justify-center gap-[8px]" style={{ marginTop: '20px', marginBottom: '14px' }}>
             {options.map((opt, i) => (
               <button
                 key={opt.id}
