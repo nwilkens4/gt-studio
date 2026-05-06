@@ -23,7 +23,7 @@ export async function buildAuthUrl(clientId, redirectUri) {
     client_id: clientId,
     response_type: 'code',
     redirect_uri: redirectUri,
-    scope: 'streaming user-read-email user-read-private',
+    scope: 'streaming user-read-email user-read-private user-modify-playback-state',
     code_challenge_method: 'S256',
     code_challenge: challenge,
   })
