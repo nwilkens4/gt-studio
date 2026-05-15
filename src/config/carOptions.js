@@ -259,7 +259,7 @@ export const WEATHER_OPTIONS = [
   { id: 'clear',    label: 'Clear' },
   { id: 'golden',   label: 'Golden Hour' },
   { id: 'overcast', label: 'Overcast' },
-  { id: 'rain',     label: 'Rain' },
+  { id: 'rain',     label: 'Snow' },
   { id: 'sunset',   label: 'Sunset' },
 ]
 

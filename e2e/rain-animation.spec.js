@@ -19,6 +19,6 @@ test('rain weather option renders without error', async ({ page }) => {
   const canvas = page.locator('canvas')
   await expect(canvas).toBeVisible()
 
-  // The Rain label should be active
-  await expect(page.getByText('Rain')).toBeVisible()
+  // The Snow label should be active
+  await expect(page.getByText('Snow')).toBeVisible()
 })
