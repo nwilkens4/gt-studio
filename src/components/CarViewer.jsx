@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useRef, useMemo } from 'react'
-import { Canvas, useThree } from '@react-three/fiber'
+import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, useProgress, Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { useCarStore } from '../state/useCarStore'
@@ -54,6 +54,60 @@ function CameraRig({ cameraIndex, orbitRef }) {
   }, [cameraIndex])
 
   return null
+}
+
+const RAIN_COUNT = 800
+const RAIN_AREA = 12
+const RAIN_TOP  = 8
+const RAIN_BOT  = -3
+const FALL_SPEED = 0.04
+const DRIFT_X    = 0.005
+
+function RainSystem() {
+  const geoRef = useRef()
+
+  const initialPositions = useMemo(() => {
+    const pos = new Float32Array(RAIN_COUNT * 3)
+    for (let i = 0; i < RAIN_COUNT; i++) {
+      pos[i * 3]     = (Math.random() - 0.5) * RAIN_AREA * 2
+      pos[i * 3 + 1] = Math.random() * (RAIN_TOP - RAIN_BOT) + RAIN_BOT
+      pos[i * 3 + 2] = (Math.random() - 0.5) * RAIN_AREA * 2
+    }
+    return pos
+  }, [])
+
+  useFrame(() => {
+    const pos = geoRef.current?.attributes.position.array
+    if (!pos) return
+    for (let i = 0; i < RAIN_COUNT; i++) {
+      pos[i * 3]     += DRIFT_X
+      pos[i * 3 + 1] -= FALL_SPEED
+      if (pos[i * 3 + 1] < RAIN_BOT) {
+        pos[i * 3]     = (Math.random() - 0.5) * RAIN_AREA * 2
+        pos[i * 3 + 1] = RAIN_TOP
+        pos[i * 3 + 2] = (Math.random() - 0.5) * RAIN_AREA * 2
+      }
+    }
+    geoRef.current.attributes.position.needsUpdate = true
+  })
+
+  return (
+    <points>
+      <bufferGeometry ref={geoRef}>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[initialPositions, 3]}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.03}
+        color="#aaccdd"
+        transparent
+        opacity={0.5}
+        sizeAttenuation
+      />
+    </points>
+  )
 }
 
 function LoadingBar() {
@@ -134,12 +188,13 @@ export default function CarViewer({ onRendererReady }) {
 
   return (
     <Canvas
-      frameloop="demand"
+      frameloop={weatherId === 'rain' ? 'always' : 'demand'}
       camera={{ position: [12, 5, 12], fov: 45 }}
       gl={{ toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.85 }}
       style={{ background: '#000000' }}
     >
       <SceneLighting weatherId={weatherId} hasEnv={!!envOption.preset} />
+      {weatherId === 'rain' && <RainSystem />}
 
       {envOption.preset && <Environment preset={envOption.preset} />}
 
